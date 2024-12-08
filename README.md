@@ -51,6 +51,14 @@ This Assessment project is a Vue 3 SPA application that provides weather informa
     npm run dev
     ```
 
+5. **Examples of Cities Tested with the Weather API**:
+   - Milan
+   - New York
+   - Kuantan
+   - Sibu
+   - Mumbai (Airport)
+   - Kuala Lumpur International Airport (KLIA)
+
 ---
 
 ### **Live Demo**
@@ -58,13 +66,29 @@ This Assessment project is a Vue 3 SPA application that provides weather informa
 Access the live version of the application here: [Live Demo](https://nabilweather.netlify.app/)
 
 ---
-
 ### **Example Screenshots**
 
-#### **Weather Dashboard**
-![Weather Dashboard](https://via.placeholder.com/800x400?text=Weather+Dashboard)
+#### **1. Location Permission**
 
-#### **Location Permission Prompt**
-![Location Permission Prompt](https://via.placeholder.com/800x400?text=Location+Permission+Prompt)
+> ⚠️ **Enable Location**  
+> On the first load of the application, a popup will request permission to access your current location.  
+> **Please enable location services** to allow the app to display accurate weather data for your current location.
+> 
+![Location Permission](screenshots/location.png)
+
+#### **2. Weather Dashboard**
+![Weather Dashboard](screenshots/dashboard.png)
+
+#### **3. City List**
+![City List](screenshots/city-list.png)
+
+#### **4. Weather Detail**
+![Weather Detail](screenshots/weather-detail.png)
+
+#### **5. Profile Page**
+![Profile Page](screenshots/profile.png)
+
+#### **6. Profile Validation**
+![Profile Validation](screenshots/profile-validation.png)
 
 ---
