@@ -1,33 +1,70 @@
-# tawk-assesment
+# **Tawk Assessment**
 
-This template should help get you started developing with Vue 3 in Vite.
+## **Weather App**
 
-## Recommended IDE Setup
+### **Overview**
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+This Assessment project is a Vue 3 SPA application that provides weather information using the OpenWeather API and OpenStreetMap.
 
-## Type Support for `.vue` Imports in TS
+---
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+### **Tech Stack**
 
-## Customize configuration
+- **Front-End**: Vue 3, TypeScript, Tailwind CSS
+- **State Management**: Pinia
+- **Validation**: Vuelidate
+- **Icons**: Heroicons
+- **Utilities**: VueUse
+- **Networking**: Axios
+- **Offline Support**: idb
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+### **Installation and Setup**
 
-```sh
-npm install
-```
+> ⚠️ **Enable Location**  
+> On the first load of the application, a popup will request permission to access your current location.  
+> **Please enable location services** to allow the app to display accurate weather data for your current location.
 
-### Compile and Hot-Reload for Development
+1. **Clone the repository**:
+    ```sh
+    git clone https://github.com/nabs32595/tawk-assesment.git
+    cd tawk-assessment
+    ```
 
-```sh
-npm run dev
-```
+2. **Set up environment variables**:
+    - Copy the provided `.env.example` file and rename it to `.env`.
+    - Fill in the necessary values for the environment variables.
 
-### Type-Check, Compile and Minify for Production
+   Example:
+    ```sh
+    cp .env.example .env
+    ```
 
-```sh
-npm run build
-```
+3. **Install dependencies**:
+    ```sh
+    npm install
+    ```
+
+4. **Start the development server**:
+    ```sh
+    npm run dev
+    ```
+
+---
+
+### **Live Demo**
+
+Access the live version of the application here: [Live Demo](https://nabilweather.netlify.app/)
+
+---
+
+### **Example Screenshots**
+
+#### **Weather Dashboard**
+![Weather Dashboard](https://via.placeholder.com/800x400?text=Weather+Dashboard)
+
+#### **Location Permission Prompt**
+![Location Permission Prompt](https://via.placeholder.com/800x400?text=Location+Permission+Prompt)
+
+---
