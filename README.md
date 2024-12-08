@@ -1,4 +1,4 @@
-# **Tawk Assessment**
+# **Tawk.to Assessment**
 
 ## **Weather App**
 
@@ -92,3 +92,20 @@ Access the live version of the application here: [Live Demo](https://nabilweathe
 ![Profile Validation](screenshots/profile-validation.png)
 
 ---
+### **Future Improvements**
+
+Due to limited time, im only available to work on weekends for this assessment, the following enhancements are my plan for future:
+
+1. **Integrate with a Back-End Service**:  
+   Add a back-end service to store and manage user profile.
+
+2. **Implement Unit Tests**:  
+   Introduce unit testing to ensure the reliability of components.
+
+3. **Enhance User Flow Testing**:  
+   Conduct more user flow testing.
+
+4. **bug fixes**:  
+   Fix bugs and improve the user experience.
+
+--- 
