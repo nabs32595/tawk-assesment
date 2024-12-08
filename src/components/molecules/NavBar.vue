@@ -1,24 +1,20 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-const activeLink = ref('');
-
-const navigateTo = (path: string) => {
-  activeLink.value = path;
-  router.push(path);
-};
-</script>
-
 <template>
-  <nav class="bg-gray-800 p-4">
-    <ul class="flex gap-4 list-none">
-      <li :class="{ 'font-bold underline': activeLink === '/' }" @click="navigateTo('/')" class="cursor-pointer text-white">Home</li>
-      <li :class="{ 'font-bold underline': activeLink === '/detail' }" @click="navigateTo('/detail')" class="cursor-pointer text-white">Weather Detail</li>
-    </ul>
+  <nav class="p-4 flex items-center justify-between">
+    <Icon name="ChevronLeftIcon" size="w-5 h-5" class="cursor-pointer" @click="navigateBack"/>
+    <span class="text-xl flex-1 text-center"><slot name="title"></slot></span>
+    <div class="w-5 h-5">
+      <slot name="right-icon"></slot>
+    </div>
   </nav>
 </template>
 
-<style scoped>
-</style>
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+import Icon from '@/components/atoms/Icon.vue';
+
+const router = useRouter();
+
+const navigateBack = () => {
+  router.back();
+};
+</script>

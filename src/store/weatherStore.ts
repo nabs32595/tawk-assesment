@@ -1,62 +1,44 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import axios from 'axios';
-import { saveWeatherData, getWeatherData } from '@/utils/db';
+import {saveWeatherData, getAllWeatherData, getWeatherDataById, deleteWeatherDataById} from '@/utils/db';
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
-const GEO_TOLERANCE = 0.1; //slightly within 11 km
-const CACHE_EXPIRATION_TIME = 60 * 60 * 1000; // 1 hour
 
 export const useWeatherStore = defineStore('weather', {
     state: () => ({
         cities: [] as Array<{ id: number; name: string; country: string; lat: number; lon: number }>,
-        weatherData: null,
+        weatherData: [] as any[],
+        weatherDetail: null as any,
         loading: false,
         error: null,
     }),
     actions: {
-        async fetchWeatherData(lat: number, lon: number) {
-            this.loading = true;
-            this.error = null;
-
+        async fetchWeatherData(lat: number, lon: number, city: string, state: string, country: string, currentLocation: boolean = false) {
             try {
-                const cacheKey = 'current-location';
-                const cachedData = await getWeatherData(cacheKey);
+                const cacheKey = city;
+                const cachedData = await getAllWeatherData();
 
-                const now = Date.now();
+                if (!cachedData.some(data => data.id === cacheKey)) {
+                    this.loading = true;
+                    const {data} = await axios.get('https://api.openweathermap.org/data/3.0/onecall', {
+                        params: {
+                            lat,
+                            lon,
+                            lang: 'en',
+                            units: 'metric',
+                            exclude: 'minutely,alerts',
+                            appid: API_KEY,
+                        },
+                    });
 
-                // Use cached data if:
-                // 1. It exists
-                // 2. It's within the geofence range
-                // 3. It's not expired
-                if (
-                    cachedData &&
-                    now - cachedData.timestamp < CACHE_EXPIRATION_TIME &&
-                    Math.abs(cachedData.lat - lat) <= GEO_TOLERANCE &&
-                    Math.abs(cachedData.lon - lon) <= GEO_TOLERANCE
-                ) {
-                    this.weatherData = cachedData.data;
-                    console.log('Using cached weather data:', this.weatherData);
-                    return;
+                    await saveWeatherData(cacheKey, data, lat, lon, city, state, country, currentLocation);
+                    this.weatherData = await getAllWeatherData();
+                    this.loading = false;
+                } else {
+                    this.weatherData = cachedData;
+                    this.loading = false;
                 }
-
-                // Fetch new data if cache is not usable
-                const response = await axios.get('https://api.openweathermap.org/data/3.0/onecall', {
-                    params: {
-                        lat,
-                        lon,
-                        lang: 'en',
-                        units: 'metric',
-                        exclude: 'minutely,alerts',
-                        appid: API_KEY,
-                    },
-                });
-
-                this.weatherData = response.data;
-
-                // Save new data to cache
-                await saveWeatherData(cacheKey, response.data, lat, lon);
             } catch (error) {
-                this.error = 'Error fetching weather data';
                 console.error('Error fetching weather data:', error);
             } finally {
                 this.loading = false;
@@ -69,27 +51,58 @@ export const useWeatherStore = defineStore('weather', {
             }
 
             try {
-                const response = await axios.get('http://api.openweathermap.org/geo/1.0/direct', {
+                const response = await axios.get('https://nominatim.openstreetmap.org/search', {
                     params: {
                         q: query,
+                        format: 'json',
+                        addressdetails: 1,
                         limit: 5,
-                        appid: API_KEY,
                     },
                 });
 
-                this.cities = response.data.map((city: any) => ({
-                    id: city.id || `${city.lat}-${city.lon}`,
-                    name: city.name,
-                    country: city.country,
-                    lat: city.lat,
-                    lon: city.lon,
-                }));
-
-                console.log('cities:', this.cities);
+                this.cities = response.data
+                    .filter((city: any) => city.addresstype === 'city' || city.addresstype === 'aeroway')
+                    .map((city: any) => ({
+                        id: `${city.lat}-${city.lon}`,
+                        city: city.address?.city || city.address?.aeroway || 'Unknown',
+                        country: city.address?.country,
+                        state: city.address?.state,
+                        lat: parseFloat(city.lat),
+                        lon: parseFloat(city.lon),
+                    }));
             } catch (error) {
-                this.error = 'Error fetching city data';
-                console.error(error);
+                console.error('Error fetching cities:', error);
             }
+        },
+        async fetchCityDetails(lat: number, lon: number) {
+            try {
+                const response = await axios.get('https://nominatim.openstreetmap.org/reverse', {
+                    params: {
+                        lat,
+                        lon,
+                        format: 'json',
+                    },
+                });
+
+                if (response.data && response.data.address) {
+                    const {town, city, state, country} = response.data.address;
+                    return {
+                        town: town,
+                        city: city,
+                        state: state,
+                        country: country,
+                    };
+                }
+            } catch (error) {
+                console.error('Error fetching city details:', error);
+            }
+        },
+        async setWeatherDetail(id: any) {
+            this.weatherDetail = await getWeatherDataById(id);
+        },
+        async deleteCity(id: string) {
+            this.weatherData = this.weatherData.filter(data => data.id !== id);
+            await deleteWeatherDataById(id);
         },
     },
 });

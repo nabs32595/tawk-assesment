@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import * as HeroiconsSolid from '@heroicons/vue/24/outline';
+import * as HeroiconsOutline from '@heroicons/vue/24/outline';
 
 // Props
 const props = defineProps({
@@ -29,7 +29,7 @@ const props = defineProps({
 
 // Computed property for icon component
 const iconComponent = computed(() => {
-  const icons = HeroiconsSolid;
+  const icons = HeroiconsOutline;
   const icon = icons[props.name];
   if (!icon) {
     console.error(`Icon "${props.name}" not found in Heroicons (${props.type})`);

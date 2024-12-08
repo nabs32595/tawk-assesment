@@ -1,45 +1,62 @@
 <template>
   <div class="px-4">
-    <div class="flex justify-between items-center mt-4">
+    <div
+        v-if="!searching"
+        class="flex justify-between items-center mt-4 transition-opacity duration-500"
+        :class="{'opacity-0 pointer-events-none': searching, 'opacity-100': !searching}"
+    >
       <h1 class="text-3xl font-bold">Weather</h1>
+      <Icon name="UserIcon" size="w-6 h-6" class="cursor-pointer" @click="goToProfile"/>
     </div>
-    <CitySearch/>
-    <WeatherCardList/>
+
+    <CitySearch @searching="setSearching"/>
+    <WeatherCardList
+        :data="weatherStore.weatherData"
+        v-if="!searching"
+        class="transition-opacity duration-500"
+        :class="{'opacity-0 pointer-events-none': searching, 'opacity-100': !searching}"
+    />
   </div>
 </template>
 
+
 <script setup lang="ts">
-import {onMounted,onUnmounted} from 'vue';
-import {getCurrentPosition} from '@/utils/geolocation';
+import {ref, onMounted, onActivated} from 'vue';
+import {useRouter} from 'vue-router';
 import {useWeatherStore} from '../store/weatherStore.ts';
+import {getCurrentPosition} from '@/utils/geolocation';
 import CitySearch from "@/components/organisms/CitySearch.vue";
 import WeatherCardList from "@/components/organisms/WeatherCardList.vue";
+import Icon from '@/components/atoms/Icon.vue';
 
+const router = useRouter();
 const weatherStore = useWeatherStore();
-let refreshInterval: NodeJS.Timeout;
+const searching = ref(false);
+
+const setSearching = (isSearching: boolean) => {
+  searching.value = isSearching;
+};
+
+const goToProfile = () => {
+  router.push({ name: 'profilePage' });
+}
+
+const fetchWeather = async () => {
+  const {latitude, longitude, city, state, country} = await getCurrentPosition();
+  await weatherStore.fetchWeatherData(latitude, longitude, city, state, country, true);
+};
+
 
 onMounted(async () => {
-  try {
-    const { latitude, longitude } = await getCurrentPosition();
-    await weatherStore.fetchWeatherData(latitude, longitude);
-
-    // Set interval to refresh weather data every hour
-    refreshInterval = setInterval(async () => {
-      await weatherStore.fetchWeatherData(latitude, longitude);
-    }, 60 * 60 * 1000); // 1 hour in milliseconds
-  } catch (error) {
-    console.error('Failed to get current position:', error);
+  if (!weatherStore.weatherData.length) {
+    await fetchWeather();
   }
 });
 
-onUnmounted(() => {
-  // Clear the interval when the component is unmounted
-  if (refreshInterval) {
-    clearInterval(refreshInterval);
+onActivated(async () => {
+  if (!weatherStore.weatherData.length) {
+    await fetchWeather();
   }
 });
 
 </script>
-
-<style scoped>
-</style>

@@ -1,11 +1,7 @@
 <template>
-  <div class="w-full h-full min-h-screen md:w-[375px] md:h-[812px] mx-auto border bg-white relative overflow-hidden">
-    <slot />
+  <div class="flex items-center justify-center w-full h-full min-h-screen">
+    <div class="w-[450px] h-[915px] md:w-[450px] md:h-[915px] mx-auto border bg-white relative overflow-hidden">
+      <slot/>
+    </div>
   </div>
 </template>
-
-<script setup lang="ts">
-</script>
-
-<style scoped>
-</style>

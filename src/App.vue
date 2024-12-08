@@ -1,16 +1,13 @@
 <template>
-  <div id="app">
-    <MobileFixedSizeTemplate>
-<!--      <nav-bar />-->
-      <router-view />
-    </MobileFixedSizeTemplate>
-  </div>
+  <router-view v-slot="{ Component }">
+    <keep-alive>
+      <MobileFixedSizeTemplate>
+        <component :is="Component"/>
+      </MobileFixedSizeTemplate>
+    </keep-alive>
+  </router-view>
 </template>
 
 <script setup lang="ts">
 import MobileFixedSizeTemplate from "@/templates/MobileFixedSizeTemplate.vue";
-import NavBar from "@/components/molecules/NavBar.vue";
 </script>
-
-<style scoped>
-</style>

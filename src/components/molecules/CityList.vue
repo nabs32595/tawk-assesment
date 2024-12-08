@@ -3,15 +3,17 @@
 </template>
 
 <script lang="ts" setup>
+import { defineEmits, defineProps } from 'vue';
 import List from '../atoms/List.vue';
 
-defineProps({
+const props = defineProps({
   cities: {
     type: Array,
     required: true,
   },
 });
-defineEmits(['citySelected']);
+
+const emit = defineEmits(['citySelected']);
 
 const onCitySelect = (city: any) => {
   emit('citySelected', city);

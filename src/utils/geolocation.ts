@@ -1,22 +1,37 @@
-export interface GeolocationPosition {
+import { useWeatherStore } from '@/store/weatherStore.ts';
+
+export const getCurrentPosition = async (): Promise<{
     latitude: number;
     longitude: number;
-}
+    city: string;
+    state: string;
+    country: string;
+}> => {
 
-export const getCurrentPosition = (): Promise<GeolocationPosition> => {
-    return new Promise((resolve, reject) => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    resolve({ latitude, longitude });
-                },
-                (error) => {
-                    reject(`Error getting location: ${error.message}`);
-                }
-            );
-        } else {
-            reject('Geolocation is not supported by this browser.');
-        }
+    if (!navigator.geolocation) {
+        throw new Error('Geolocation is not supported by this browser.');
+    }
+
+    // Get the user's current position
+    const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, (error) => {
+            reject(new Error(`Error getting location: ${error.message}`));
+        });
     });
+
+    const { latitude, longitude } = position.coords;
+
+    // get city details
+    const weatherStore = useWeatherStore();
+    const cityDetails = await weatherStore.fetchCityDetails(latitude, longitude);
+
+    if (!cityDetails) {
+        throw new Error('City details not found.');
+    }
+
+    return {
+        latitude,
+        longitude,
+        ...cityDetails,
+    };
 };

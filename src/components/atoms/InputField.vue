@@ -1,20 +1,47 @@
 <template>
-  <div class="flex rounded-md bg-white outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-    <input
-        v-bind="$attrs"
-        :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
-        type="text" name="search" id="search"
-        class="block min-w-0 grow px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"/>
+  <div class="w-full">
+    <div class="flex flex-col w-full px-4 bg-gray-100 rounded-xl">
+
+      <label v-if="$slots.label" for="input" class="text-xs text-gray-400 font-light pt-2">
+        <slot name="label"/>
+      </label>
+
+      <div class="flex items-center w-full">
+        <slot v-if="$slots.left" name="left"/>
+        <input
+            id="input"
+            :placeholder="placeholder"
+            :type="type"
+            :readonly="readonly"
+            v-bind="$attrs"
+            :value="modelValue"
+            @input="$emit('update:modelValue', $event.target.value)"
+            class="w-full bg-gray-100 text-base text-gray-700 placeholder-gray-400 focus:outline-none pb-2 pt-2"
+        />
+        <slot v-if="$slots.right" name="right"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-defineProps({
+const props = defineProps({
   modelValue: {
     type: String,
     required: true,
   },
+  placeholder: {
+    type: String,
+    default: '',
+  },
+  type: {
+    type: String,
+    default: 'text',
+  },
+  readonly: {
+    type: Boolean,
+    default: true,
+  },
 });
-defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
 </script>
