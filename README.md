@@ -34,7 +34,7 @@ This Assessment project is a Vue 3 SPA application that provides weather informa
 
 2. **Set up environment variables**:
     - Copy the provided `.env.example` file and rename it to `.env`.
-    - Fill in the necessary values for the environment variables.
+    - Fill in the necessary values for the environment variables. API key will be provided via email.
 
    Example:
     ```sh
